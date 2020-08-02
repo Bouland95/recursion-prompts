@@ -409,18 +409,34 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
-  // if () {
 
-  // }
-  // var count = 0;
-  // for (var key in obj) {
-
-  // }
+  var c = 0;
+  for (var key in obj) {
+    if (obj[key] === value) {
+      c++;
+    } if (typeof obj[key] === 'object') {
+      c += countValuesInObj(obj[key], value);
+    }
+  }
+  return c;
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+  if (typeof obj !== 'object' || obj === null) {
+    return;
+  }
+  for (var key in obj) {
+    if (key === oldKey) {
+      obj[newKey] = obj[oldKey];
+      delete obj[oldKey];
+    }
+    if (typeof obj[key] === 'object') {
+      replaceKeysInObj(obj[key], oldKey, newKey);
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
@@ -429,6 +445,17 @@ var replaceKeysInObj = function(obj, oldKey, newKey) {
 // fibonacci(5); // [0,1,1,2,3,5]
 // Note: The 0 is not counted.
 var fibonacci = function(n) {
+  if (n < 1) {
+    return null;
+  }
+  if (n === 1) {
+    return [0, 1];
+  }
+  var array = fibonacci(n - 1);
+  var lastEl = array[n - 1];
+  var beforeLastEl = array[n - 2];
+  array.push(lastEl + beforeLastEl);
+  return array;
 };
 
 // 26. Return the Fibonacci number located at index n of the Fibonacci sequence.
@@ -437,12 +464,49 @@ var fibonacci = function(n) {
 // nthFibo(7); // 13
 // nthFibo(3); // 2
 var nthFibo = function(n) {
+  if (n < 0) {
+    return null;
+  }
+  if (n === 0) {
+    return 0;
+  }
+  if (n === 1) {
+    return 1;
+  }
+
+  return nthFibo(n - 1) + nthFibo(n - 2);
+
 };
 
 // 27. Given an array of words, return a new array containing each word capitalized.
 // var words = ['i', 'am', 'learning', 'recursion'];
 // capitalizedWords(words); // ['I', 'AM', 'LEARNING', 'RECURSION']
 var capitalizeWords = function(array) {
+  if (array.length === 0) {
+    return [];
+  }
+  var newArr = array.slice(0, array.length - 1);
+  var results = capitalizeWords(newArr);
+
+  var lowerC = array[array.length - 1];
+  var upperC  = '';
+
+  // if lowercase letter conver to uppercase
+  // otherwise add all other chars as is
+  for (let i = 0; i < lowerC.length; i++) {
+    var ascii = lowerC.charCodeAt(i);
+    if (ascii > 96 && ascii < 123) {
+
+      ascii -= 32;
+      upperC += String.fromCharCode(ascii);
+
+    } else {
+      upperC += lowerC[i];
+    }
+  }
+
+  results.push(upperC);
+  return results;
 };
 
 // 28. Given an array of strings, capitalize the first letter of each index.
