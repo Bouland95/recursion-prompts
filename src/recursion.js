@@ -512,6 +512,24 @@ var capitalizeWords = function(array) {
 // 28. Given an array of strings, capitalize the first letter of each index.
 // capitalizeFirst(['car','poop','banana']); // ['Car','Poop','Banana']
 var capitalizeFirst = function(array) {
+
+  if (array.length === 0) {
+    return [];
+  }
+  var lastIndex = array.length - 1;
+  var results = capitalizeFirst(array.slice(0, lastIndex));
+
+  var wordCopy = array[lastIndex].slice();
+
+  var firstLetterCode = wordCopy.charCodeAt(0);
+
+  if (firstLetterCode > 96 && firstLetterCode < 123) {
+    firstLetterCode -= 32;
+    wordCopy = String.fromCharCode(firstLetterCode) + wordCopy.slice(1);
+  }
+
+  results.push(wordCopy);
+  return results;
 };
 
 // 29. Return the sum of all even numbers in an object containing nested objects.
@@ -524,11 +542,35 @@ var capitalizeFirst = function(array) {
 // };
 // nestedEvenSum(obj1); // 10
 var nestedEvenSum = function(obj) {
+
+  var sum = 0;
+
+  for (var key in obj) {
+    if (typeof obj[key] === 'object') {
+      sum += nestedEvenSum(obj[key]);
+    }
+    if (obj[key] % 2 === 0) {
+      sum += obj[key];
+    }
+  }
+
+  return sum;
 };
 
 // 30. Flatten an array containing nested arrays.
 // flatten([1,[2],[3,[[4]]],5]); // [1,2,3,4,5]
 var flatten = function(array) {
+  var results = [];
+
+  array.forEach(function(element) {
+    if (Array.isArray(element)) {
+      results = results.concat(flatten(element));
+    } else {
+      results.push(element);
+    }
+  })
+
+  return results;
 };
 
 // 31. Given a string, return an object containing tallies of each letter.
